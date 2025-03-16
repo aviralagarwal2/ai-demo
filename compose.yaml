@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./backend/.env
+    networks:
+      - app-network  # Ensure both frontend and backend are in the same network
+    restart: unless-stopped  # Ensures the backend restarts if it crashes
+    volumes:
+      - ./backend:/usr/src/app  # Mount backend source code for live development
+      - /usr/src/app/node_modules  # Avoid overwriting node_modules
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:80"
+    env_file:
+      - ./frontend/.env
+    depends_on:
+      - backend
+    networks:
+      - app-network  # Ensure both frontend and backend are in the same network
+    restart: unless-stopped  # Ensures the frontend restarts if it crashes
+    volumes:
+      - ./frontend:/usr/src/app  # Mount frontend source code for live development
+      - /usr/src/app/node_modules  # Avoid overwriting node_modules
+
+networks:
+  app-network:  # Define a custom network
+    driver: bridge

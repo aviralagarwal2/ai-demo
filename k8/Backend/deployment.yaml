@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: mern-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: aviral2/backend-new:v1
+        ports:
+        - containerPort: 3000
+        envFrom:
+        - configMapRef:
+            name: mern-config
+        - secretRef:
+            name: mern-secret
+---
+
